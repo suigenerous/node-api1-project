@@ -6,7 +6,7 @@ server.use(express.json());
 
 // users array
 
-const users = [
+let users = [
     {
         id: 1,
         name: "William Herman",
@@ -35,7 +35,7 @@ server.get("/api/users", (req, res) => {
 
 // get to return a specific user
 
-server.get("api/users/:id", (req, res) => {
+server.get("/api/users/:id", (req, res) => {
     const id = Number(req.params.id);
     const found = users.find(u => u.id === id);
     if (found) {
@@ -47,7 +47,7 @@ server.get("api/users/:id", (req, res) => {
 
 // deletes a specific user and returns the deleted user
 
-server.delete("api/users/:id", (req, res) => {
+server.delete("/api/users/:id", (req, res) => {
     const id = Number(req.params.id);
     const found = users.find(u => u.id === id);
     if (found) {
@@ -60,7 +60,7 @@ server.delete("api/users/:id", (req, res) => {
 
 // put to update a specific user
 
-server.put("api/users/:id", (req, res) => {
+server.put("/api/users/:id", (req, res) => {
     const changed = req.body;
     const id = Number(req.params.id);
     const found = users.find(u => u.id === id);
