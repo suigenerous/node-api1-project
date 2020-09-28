@@ -88,11 +88,19 @@ server.put("/api/users/:id", (req, res) => {
     const id = Number(req.params.id);
     const found = users.find(u => u.id === id);
     if (found) {
-        Object.assign(found, changed);
-        res.status(200).send({data: changed});
+        if (changed.name && changed.bio){
+            try {
+                Object.assign(found, changed);
+                res.status(200).send({data: {updatedUser: changed, usersList: users}});
+            } catch (err) {
+                res.status(500).json({ errorMessage: "The user information could not be modified.", error: err })
+            };
+        } else {
+            res.status(400).json({ errorMessage: "Please provide name and bio for the user." });
+        };  
     } else {
-        res.status(404).json({message: "user not found"});
-    }
+        res.status(404).json({ message: "The user with the specified ID does not exist." });
+    };
 });
 
 // initialize server on port 5000
