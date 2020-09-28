@@ -23,14 +23,28 @@ let users = [
 
 server.post("/api/users", (req, res) => {
     const newUser = req.body;
-    users.push(newUser);
-    res.status(201).json({message: "user added"});
-})
+    if (newUser.name && newUser.bio){
+        try {
+            users.push(newUser);
+            res.status(201).json({message: "user added", data: users});
+        } catch {
+            res.status(500).json({errorMessage: "There was an error while saving the user to the database"});
+        };
+    } else {
+        res.status(400).json({errorMessage: "Please provide name and bio for the user."});
+    };
+});
 
 // get to return users array
 
 server.get("/api/users", (req, res) => {
-    res.status(200).json({data: users});
+    try {
+        const usersToReturn = users;
+    }
+    catch {
+        res.status(500).json({errorMessage: "The users information could not be retrieved."});
+    };
+    res.status(200).json({data: usersToReturn});
 });
 
 // get to return a specific user
