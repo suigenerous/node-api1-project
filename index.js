@@ -21,11 +21,42 @@ const users = [
 
 // post to create user
 
+server.post("/api/users", (req, res) => {
+    const newUser = req.body;
+    users.push(newUser);
+    res.status(201).json({message: "user added"});
+})
+
 // get to return users array
+
+server.get("/api/users", (req, res) => {
+    res.status(200).json({data: users});
+});
 
 // get to return a specific user
 
+server.get("api/users/:id", (req, res) => {
+    const id = Number(req.params.id);
+    const found = users.find(u => u.id === id);
+    if (found) {
+        res.status(200).json({data: found});
+    } else {
+        res.status(404).json({message: "user not found"});
+    };
+});
+
 // deletes a specific user and returns the deleted user
+
+server.delete("api/users/:id", (req, res) => {
+    const id = Number(req.params.id);
+    const found = users.find(u => u.id === id);
+    if (found) {
+        users = users.filter(u => u !== found);
+        res.status(200).json({data: found});
+    } else {
+        res.status(404).json({message: "user not found"});
+    };
+});
 
 // put to update a specific user
 
