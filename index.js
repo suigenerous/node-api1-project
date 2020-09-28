@@ -60,6 +60,18 @@ server.delete("api/users/:id", (req, res) => {
 
 // put to update a specific user
 
+server.put("api/users/:id", (req, res) => {
+    const changed = req.body;
+    const id = Number(req.params.id);
+    const found = users.find(u => u.id === id);
+    if (found) {
+        Object.assign(found, changed);
+        res.status(200).send({data: changed});
+    } else {
+        res.status(404).json({message: "user not found"});
+    }
+});
+
 // initialize server on port 5000
 
 const port = 5000;
