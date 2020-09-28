@@ -27,8 +27,8 @@ server.post("/api/users", (req, res) => {
         try {
             users.push(newUser);
             res.status(201).json({message: "user added", data: users});
-        } catch {
-            res.status(500).json({errorMessage: "There was an error while saving the user to the database"});
+        } catch (err) {
+            res.status(500).json({errorMessage: "There was an error while saving the user to the database", error: err});
         };
     } else {
         res.status(400).json({errorMessage: "Please provide name and bio for the user."});
@@ -40,11 +40,11 @@ server.post("/api/users", (req, res) => {
 server.get("/api/users", (req, res) => {
     try {
         const usersToReturn = users;
+        res.status(200).json({data: usersToReturn});
     }
-    catch {
-        res.status(500).json({errorMessage: "The users information could not be retrieved."});
+    catch (err) {
+        res.status(500).json({errorMessage: "The users information could not be retrieved.", error: err});
     };
-    res.status(200).json({data: usersToReturn});
 });
 
 // get to return a specific user
@@ -53,9 +53,14 @@ server.get("/api/users/:id", (req, res) => {
     const id = Number(req.params.id);
     const found = users.find(u => u.id === id);
     if (found) {
-        res.status(200).json({data: found});
+        try {
+            const userToReturn = found;
+            res.status(200).json({data: userToReturn});
+        } catch (err) {
+            res.status(500).json({ errorMessage: "The user information could not be retrieved.", error: err});
+        };
     } else {
-        res.status(404).json({message: "user not found"});
+        res.status(404).json({message: "The user with the specified ID does not exist."});
     };
 });
 
@@ -65,10 +70,14 @@ server.delete("/api/users/:id", (req, res) => {
     const id = Number(req.params.id);
     const found = users.find(u => u.id === id);
     if (found) {
-        users = users.filter(u => u !== found);
-        res.status(200).json({data: found});
+        try {
+            users = users.filter(u => u !== found);
+            res.status(200).json({data: found});
+        } catch (err) {
+            res.status(500).json({ errorMessage: "The user could not be removed", error: err })
+        }
     } else {
-        res.status(404).json({message: "user not found"});
+        res.status(404).json({ message: "The user with the specified ID does not exist." });
     };
 });
 
